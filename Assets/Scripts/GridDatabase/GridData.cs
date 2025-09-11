@@ -27,9 +27,9 @@ public struct GridData
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int2 GetCoordsFromPostion(in GridData grid, float2 position)
+    public static int2 GetCoordsFromPostion(in GridData grid, float3 position)
     {
-        float2 local = position - grid.boundMin;
+        float2 local = position.xz - grid.boundMin;
         int2 coords = new int2
         {
             x = (int)math.floor(local.x / grid.cellSize),
@@ -57,7 +57,7 @@ public struct GridData
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetCellIndexFromPosition(in GridData grid, float2 position)
+    public static int GetCellIndexFromPosition(in GridData grid, float3 position)
     {
         if(CheckIfBounds(grid, position))
         {
@@ -68,7 +68,7 @@ public struct GridData
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CheckIfBounds(in GridData grid, float2 position)
+    public static bool CheckIfBounds(in GridData grid, float3 position)
     {
         return (position.x > grid.boundMin.x || position.x < grid.boundMax.x ||
             position.y > grid.boundMin.y || position.y < grid.boundMax.y);
@@ -88,6 +88,6 @@ public struct GridCell : IBufferElementData
 public struct GridCellElement : IBufferElementData
 {
     public Entity entity;
-    public float2 postion;
+    public float3 postion;
     public byte type;
 }

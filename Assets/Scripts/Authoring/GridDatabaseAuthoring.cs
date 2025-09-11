@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GridDatabaseAuthoring : MonoBehaviour
 {
+
     [SerializeField]
     float halfSize;
     [SerializeField]
