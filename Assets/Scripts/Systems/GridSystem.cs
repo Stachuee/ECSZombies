@@ -1,9 +1,20 @@
+using System.Runtime.CompilerServices;
 using Unity.Burst;
 using Unity.Burst.Intrinsics;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
+using Unity.Jobs;
+using Unity.Jobs.LowLevel.Unsafe;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using static GridDatabase;
+
+public interface IGridCollector
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void OnVisitCell(in GridCell cell, in UnsafeList<GridCellElement> elements, out bool exitEarly);
+}
 
 [UpdateInGroup(typeof(GridBuilding))]
 public partial struct GridSystem : ISystem
@@ -37,10 +48,23 @@ public partial struct GridSystem : ISystem
 
         AssignUnitsToCells assignUnitToCells = new AssignUnitsToCells
         {
-            CachedSpatialDatabase = unsafeGrid
+            cachedDatabase = unsafeGrid,
         };
 
         state.Dependency = assignUnitToCells.ScheduleParallel(state.Dependency);
+        JobHandle initialDep = state.Dependency;
+        int parallelCount = math.max(1, JobsUtility.JobWorkerCount - 1);
+
+        for (int s = 0; s < parallelCount; s++)
+        {
+            BuildDatabase build = new BuildDatabase
+            {
+                JobSequenceNb = s,
+                JobsTotalCount = parallelCount,
+                cachedDatabase = unsafeGrid
+            };
+            state.Dependency = JobHandle.CombineDependencies(state.Dependency, build.Schedule(initialDep));
+        }
     }
 
     [BurstCompile]
@@ -52,7 +76,7 @@ public partial struct GridSystem : ISystem
     [BurstCompile]
     partial struct AssignUnitsToCells : IJobEntity, IJobEntityChunkBeginEnd
     {
-        public CachedGridDatabaseUnsafe CachedSpatialDatabase;
+        public CachedGridDatabaseUnsafe cachedDatabase;
 
         // other cached data
         private GridData _grid;
@@ -65,8 +89,39 @@ public partial struct GridSystem : ISystem
 
         public bool OnChunkBegin(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
         {
-            CachedSpatialDatabase.CacheData();
-            _grid = CachedSpatialDatabase.gridDatabase.gridData;
+            cachedDatabase.CacheData();
+            _grid = cachedDatabase.gridDatabase.gridData;
+            return true;
+        }
+
+        public void OnChunkEnd(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask, bool chunkWasExecuted)
+        {
+        }
+    }
+
+    [BurstCompile]
+    partial struct BuildDatabase : IJobEntity, IJobEntityChunkBeginEnd
+    {
+        public int JobSequenceNb;
+        public int JobsTotalCount;
+        public CachedGridDatabaseUnsafe cachedDatabase;
+
+        public void Execute(Entity entity, in LocalToWorld ltw, in UnitCellID cellId)
+        {
+            if(cellId.cellIndex % JobsTotalCount == JobSequenceNb)
+            {
+                GridCellElement element = new GridCellElement
+                {
+                    entity = entity,
+                    postion = ltw.Position,
+                };
+                GridDatabase.AddToDatabase(in cachedDatabase.gridDatabase, ref cachedDatabase.gridCellUnsafe, ref cachedDatabase.gridCellElementUnsafe, element);
+            }
+        }
+
+        public bool OnChunkBegin(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
+        {
+            cachedDatabase.CacheData();
             return true;
         }
 

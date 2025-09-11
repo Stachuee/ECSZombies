@@ -27,9 +27,9 @@ public struct GridData
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int2 GetCoordsFromPostion(in GridData grid, float3 position)
+    public static int2 GetCoordsFromPostion(in GridData grid, float2 position)
     {
-        float2 local = position.xz - grid.boundMin;
+        float2 local = position - grid.boundMin;
         int2 coords = new int2
         {
             x = (int)math.floor(local.x / grid.cellSize),
@@ -57,22 +57,66 @@ public struct GridData
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetCellIndexFromPosition(in GridData grid, float3 position)
+    public static int GetCellIndexFromPosition(in GridData grid, float2 position)
     {
         if(CheckIfBounds(grid, position))
         {
-            int2 cellCords = GetCoordsFromPostion(grid, position);
-            return GetCellIndexFromCoords(grid, cellCords);
+            int2 cellCords = GetCoordsFromPostion(in grid, position);
+            return GetCellIndexFromCoords(in grid, cellCords);
         }
         return -1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool CheckIfBounds(in GridData grid, float3 position)
+    public static int GetCellIndexFromPosition(in GridData grid, float3 position)
+    {
+        return GetCellIndexFromPosition(in grid, position.xz);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CheckIfBounds(in GridData grid, float2 position)
     {
         return (position.x > grid.boundMin.x || position.x < grid.boundMax.x ||
             position.y > grid.boundMin.y || position.y < grid.boundMax.y);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool CheckIfBounds(in GridData grid, float3 position)
+    {
+        return CheckIfBounds(in grid, position.xz);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool AABBIntersectAABB(float2 aabb1Min, float2 aabb1Max, float2 aabb2Min, float2 aabb2Max)
+    {
+        return (aabb1Min.x <= aabb2Max.x && aabb1Max.x >= aabb2Min.x) &&
+               (aabb1Min.y <= aabb2Max.y && aabb1Max.y >= aabb2Min.y);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool GetAABBMinMaxCoords(in GridData grid, float2 aabbmin, float2 aabbmax, out int2 minCoords, out int2 maxCoords)
+    {
+        if(AABBIntersectAABB(aabbmin, aabbmax, grid.boundMin, grid.boundMax))
+        {
+            aabbmin = math.clamp(aabbmin, grid.boundMin, grid.boundMax);
+            aabbmax = math.clamp(aabbmax, grid.boundMin, grid.boundMax);
+
+            minCoords = GetCoordsFromPostion(in grid, aabbmin);
+            maxCoords = GetCoordsFromPostion(in grid, aabbmax);
+
+            return true;
+        }
+        minCoords = new int2(-1);
+        maxCoords = new int2(-1);
+        return false;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool GetAABBMinMaxCoords(in GridData grid, float3 aabbmin, float3 aabbmax, out int2 minCoords, out int2 maxCoords)
+    {
+        return GetAABBMinMaxCoords(in grid, aabbmin.xz, aabbmax.xz, out minCoords, out maxCoords);
+    }
+
 }
 
 [InternalBufferCapacity(0)]
@@ -89,5 +133,4 @@ public struct GridCellElement : IBufferElementData
 {
     public Entity entity;
     public float3 postion;
-    public byte type;
 }

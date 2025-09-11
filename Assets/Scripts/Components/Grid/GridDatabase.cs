@@ -47,7 +47,8 @@ public struct GridDatabase : IComponentData
             cell.startIndex = spaceAfterResize;
             cell.elementCapacity = math.select(cell.elementCapacity, (int)math.ceil((cell.elementCapacity + cell.excessElementCount) * 2), cell.excessElementCount > 0);
             spaceAfterResize += cell.elementCapacity;
-            cell.elementCapacity = 0;
+            
+            cell.elementCount = 0;
             cell.excessElementCount = 0;
             
             cells[i] = cell;
@@ -114,5 +115,46 @@ public struct GridDatabase : IComponentData
 
     }
 
+    public unsafe static void CellQueryAABB<T>(in GridDatabase database,
+    in DynamicBuffer<GridCell> cells, in DynamicBuffer<GridCellElement> elements, float3 center, float3 halfBoundSize,
+    ref T collector) where T : unmanaged, IGridCollector
+    {
+        UnsafeList<GridCell> cellsUnsafe =
+            new UnsafeList<GridCell>((GridCell*)cells.GetUnsafeReadOnlyPtr(), cells.Length);
+        UnsafeList<GridCellElement> elementsUnsafe =
+            new UnsafeList<GridCellElement>((GridCellElement*)elements.GetUnsafeReadOnlyPtr(), elements.Length);
+
+        CellQueryAABB(in database, in cellsUnsafe, in elementsUnsafe, center, halfBoundSize, ref collector);
+    }
+
+    public static void CellQueryAABB<T>(in GridDatabase database,
+        in UnsafeList<GridCell> cells, in UnsafeList<GridCellElement> elements, float3 center, float3 halfBoundSize,
+        ref T collector) where T : unmanaged, IGridCollector
+    {
+        float3 aabbMin = center - halfBoundSize;
+        float3 aabbMax = center + halfBoundSize;
+
+        GridData grid = database.gridData;
+
+        if(GridData.GetAABBMinMaxCoords(in grid, aabbMin, aabbMax, out int2 minCoords, out int2 maxCoords))
+        {
+            for(int y = minCoords.y; y <= maxCoords.y; y++)
+            {
+                for (int x = minCoords.x; x <= maxCoords.x; x++)
+                {
+                    int2 coords = new int2(x, y);
+                    int cellIndex = GridData.GetCellIndexFromCoords(in grid, coords);
+                    GridCell cell = cells[cellIndex];
+                    collector.OnVisitCell(in cell, in elements, out bool exitEarly);
+
+                    if(exitEarly)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+    }
 
 }
