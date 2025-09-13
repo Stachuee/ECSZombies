@@ -9,11 +9,17 @@ public class ConfigAuthoring : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField]
     GameObject gridDatabase;
+    [SerializeField]
+    GameObject basicZombie;
 
     [Header("Grid info")]
     public float halfSize;
     public int cellsPerSide;
     public int cellCapacity;
+
+    [Header("Debug")]
+    public bool spawnUnits;
+    public int maxSpawnedUnits;
 
     class Baker : Baker<ConfigAuthoring>
     {
@@ -25,9 +31,13 @@ public class ConfigAuthoring : MonoBehaviour
                 initialized = false,
                 initializeOnApplicationStart = authoring.initializeOnApplicationStart,
                 gridDatabasePrefab = GetEntity(authoring.gridDatabase, TransformUsageFlags.None),
+                basicZombie = GetEntity(authoring.basicZombie, TransformUsageFlags.Dynamic),
                 halfSize = authoring.halfSize,
                 cellCapacity = authoring.cellCapacity,
                 cellsPerSide = authoring.cellsPerSide,
+                spawnUnits = authoring.spawnUnits,
+                maxSpawnedUnits = authoring.maxSpawnedUnits,
+
             });
         }
     }

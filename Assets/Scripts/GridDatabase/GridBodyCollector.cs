@@ -1,30 +1,47 @@
 using JetBrains.Annotations;
+using System.Runtime.CompilerServices;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
 public struct GridBodyCollector : IGridCollector
 {
-    float3 position;
-    float bodyRadius;
-    float bodyHeight;
+    public float3 position;
+    public float bodyRadius;
+    public float bodyHeight;
 
+    public Entity querier;
     public float2 collisionForce;
 
-    public GridBodyCollector(float3 position, float bodyRadius, float bodyHeight)
-    {
-        collisionForce = new float2(0);
 
-        this.position = position;
-        this.bodyRadius = bodyRadius;
-        this.bodyHeight = bodyHeight;
-    }
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void OnVisitCell(in GridCell cell, in UnsafeList<GridCellElement> elements, out bool exitEarly)
     {
         exitEarly = false;
-        collisionForce = new float2(0);
 
+        for(int i = cell.startIndex; i < cell.startIndex + cell.elementCount; i++)
+        {
+            GridCellElement element = elements[i];
+
+            if (querier == element.entity)
+                continue;
+
+            float distSqr = GridData.GetRealDistanceSq(position, element.postion);
+            float sumOfRadius = bodyRadius + element.radius;
+
+            if (distSqr > sumOfRadius * sumOfRadius)
+                continue;
+
+            if (distSqr < 0.001 && querier.Index < element.entity.Index)
+                position -= new float3(bodyRadius * 0.1f, 0, bodyRadius * 0.1f);
+
+            float realDist = math.sqrt(distSqr);
+            float2 normalized = GridData.GetDirection(position, element.postion) / realDist;
+            float overlap = realDist - sumOfRadius;
+            collisionForce += normalized * (overlap / 2);
+
+        }
 
     }
 }

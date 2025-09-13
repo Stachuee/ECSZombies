@@ -8,9 +8,14 @@ public struct Config : IComponentData
     public bool initializeOnApplicationStart;
     [Header("Prefabs")]
     public Entity gridDatabasePrefab;
+    public Entity basicZombie;
 
     [Header("Grid info")]
     public float halfSize;
     public int cellsPerSide;
     public int cellCapacity;
+
+    [Header("Debug")]
+    public bool spawnUnits;
+    public float maxSpawnedUnits;
 }

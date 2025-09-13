@@ -13,9 +13,15 @@ public class BodyAuthoring : MonoBehaviour
         public override void Bake(BodyAuthoring authoring)
         {
             Entity entity = GetEntity(authoring, TransformUsageFlags.None);
-            PhysicBody body = new PhysicBody();
-            
+            PhysicBody body = new PhysicBody
+            {
+                height = authoring.height,
+                radius = authoring.radius
+            };
+            UnitBodyCollisionForce force = new UnitBodyCollisionForce();
+
             AddComponent(entity, body);
+            AddComponent(entity, force);
         }
     }
 }

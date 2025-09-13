@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
@@ -22,8 +23,8 @@ public struct GridDatabase : IComponentData
 
         int cellCount = cellPerSide * cellPerSide;
 
-        cells.Resize(cellCount, Unity.Collections.NativeArrayOptions.ClearMemory);
-        elements.Resize(cellCount * cellCapacity, Unity.Collections.NativeArrayOptions.ClearMemory);
+        cells.Resize(cellCount, NativeArrayOptions.ClearMemory);
+        elements.Resize(cellCount * cellCapacity, NativeArrayOptions.ClearMemory);
 
         // Clear and set all variables
         for(int i = 0; i < cellCount; i++)
@@ -53,7 +54,8 @@ public struct GridDatabase : IComponentData
             
             cells[i] = cell;
         }
-        element.Resize(spaceAfterResize, Unity.Collections.NativeArrayOptions.ClearMemory);
+        element.Resize(spaceAfterResize, NativeArrayOptions.ClearMemory);
+        //element.Clear();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -115,6 +117,7 @@ public struct GridDatabase : IComponentData
 
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe static void CellQueryAABB<T>(in GridDatabase database,
     in DynamicBuffer<GridCell> cells, in DynamicBuffer<GridCellElement> elements, float3 center, float3 halfBoundSize,
     ref T collector) where T : unmanaged, IGridCollector
@@ -127,6 +130,7 @@ public struct GridDatabase : IComponentData
         CellQueryAABB(in database, in cellsUnsafe, in elementsUnsafe, center, halfBoundSize, ref collector);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CellQueryAABB<T>(in GridDatabase database,
         in UnsafeList<GridCell> cells, in UnsafeList<GridCellElement> elements, float3 center, float3 halfBoundSize,
         ref T collector) where T : unmanaged, IGridCollector

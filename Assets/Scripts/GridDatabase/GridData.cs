@@ -116,7 +116,30 @@ public struct GridData
     {
         return GetAABBMinMaxCoords(in grid, aabbmin.xz, aabbmax.xz, out minCoords, out maxCoords);
     }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float GetRealDistanceSq(float3 a, float3 b)
+    {
+        return GetRealDistanceSq(a.xz, b.xz);
+    }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float GetRealDistanceSq(float2 a, float2 b)
+    {
+        return math.distancesq(a, b);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float2 GetDirection(float2 a, float2 b)
+    {
+        return b - a;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float2 GetDirection(float3 a, float3 b)
+    {
+        return GetDirection(a.xz, b.xz);
+    }
 }
 
 [InternalBufferCapacity(0)]
@@ -133,4 +156,7 @@ public struct GridCellElement : IBufferElementData
 {
     public Entity entity;
     public float3 postion;
+
+    public float radius;
+    public float height;
 }

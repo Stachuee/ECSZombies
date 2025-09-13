@@ -106,7 +106,7 @@ public partial struct GridSystem : ISystem
         public int JobsTotalCount;
         public CachedGridDatabaseUnsafe cachedDatabase;
 
-        public void Execute(Entity entity, in LocalToWorld ltw, in UnitCellID cellId)
+        public void Execute(Entity entity, in LocalToWorld ltw, in UnitCellID cellId, in PhysicBody body)
         {
             if(cellId.cellIndex % JobsTotalCount == JobSequenceNb)
             {
@@ -114,6 +114,8 @@ public partial struct GridSystem : ISystem
                 {
                     entity = entity,
                     postion = ltw.Position,
+                    height = body.height,
+                    radius = body.radius
                 };
                 GridDatabase.AddToDatabase(in cachedDatabase.gridDatabase, ref cachedDatabase.gridCellUnsafe, ref cachedDatabase.gridCellElementUnsafe, element);
             }
