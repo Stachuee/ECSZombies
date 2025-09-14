@@ -9,7 +9,6 @@ using UnityEngine;
 public struct GridDatabase : IComponentData
 {
     public GridData gridData;
-
     public static void CreataDatabase(float halfSize, int cellPerSide, int cellCapacity, ref GridDatabase gridDatabase, ref DynamicBuffer<GridCell> cells, ref DynamicBuffer<GridCellElement> elements)
     {
         gridDatabase.gridData = new GridData(halfSize, cellPerSide);
@@ -55,7 +54,6 @@ public struct GridDatabase : IComponentData
             cells[i] = cell;
         }
         element.Resize(spaceAfterResize, NativeArrayOptions.ClearMemory);
-        //element.Clear();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

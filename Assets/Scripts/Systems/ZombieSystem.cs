@@ -8,6 +8,7 @@ using Unity.Transforms;
 using UnityEngine;
 using static GridDatabase;
 
+[UpdateInGroup(typeof(UnitMovment))]
 public partial struct ZombieSystem : ISystem
 {
     
@@ -59,6 +60,7 @@ public partial struct ZombieSystem : ISystem
     }
 
     [BurstCompile]
+    [WithAll(typeof(Zombie))]
     public partial struct ZombieMovmentJob : IJobEntity
     {
         public float deltaTime;
@@ -76,6 +78,7 @@ public partial struct ZombieSystem : ISystem
 
 
     [BurstCompile]
+    [WithAll(typeof(Zombie))]
     public partial struct ZombieCollisionJob : IJobEntity, IJobEntityChunkBeginEnd
     {
         public CachedGridDatabaseUnsafe cachedDatabase;
@@ -84,14 +87,16 @@ public partial struct ZombieSystem : ISystem
 
         private void Execute(Entity entity, ref Unit unit, ref LocalTransform lt, ref PhysicBody body, ref UnitBodyCollisionForce collisionForce, ref UnitCellID id)
         {
-            GridBodyCollector collector = new GridBodyCollector { 
+            GridUnitCollisionCollector collector = new GridUnitCollisionCollector
+            {
                 position = lt.Position,
                 bodyRadius = body.radius,
                 bodyHeight = body.height,
                 querier = entity,
+                staticBody = body.staticBody,
                 collisionForce = new float2(0)
             };
-            GridDatabase.CellQueryAABB<GridBodyCollector>(in cachedDatabase.gridDatabase, in cachedDatabase.gridCellUnsafe, cachedDatabase.gridCellElementUnsafe, lt.Position, body.radius, ref collector);
+            GridDatabase.CellQueryAABB<GridUnitCollisionCollector>(in cachedDatabase.gridDatabase, in cachedDatabase.gridCellUnsafe, cachedDatabase.gridCellElementUnsafe, lt.Position, body.radius, ref collector);
             collisionForce.collisionForce = collector.collisionForce;
         }
 
@@ -108,6 +113,7 @@ public partial struct ZombieSystem : ISystem
     }
 
     [BurstCompile]
+    [WithAll(typeof(Zombie))]
     public partial struct ZombieApplyCollision : IJobEntity
     {
         private void Execute(ref Unit unit, ref LocalTransform lt, ref PhysicBody body, ref UnitBodyCollisionForce collisionForce)

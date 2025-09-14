@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnitAuthoring : MonoBehaviour
 {
-
+    public byte team;
     class Baker : Baker<UnitAuthoring>
     {
         public override void Bake(UnitAuthoring authoring)
@@ -12,7 +12,7 @@ public class UnitAuthoring : MonoBehaviour
             Entity entity = GetEntity(authoring, TransformUsageFlags.Dynamic);
             AddComponent(entity, new Unit
             {
-                Velocity = new float3(1, 0, 0)
+                team = authoring.team,
             });
         }
     }

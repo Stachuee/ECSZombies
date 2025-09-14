@@ -15,8 +15,9 @@ GameObject:
   - component: {fileID: 8687738085627662676}
   - component: {fileID: -8870605983015425653}
   - component: {fileID: 7330537939658428443}
+  - component: {fileID: 6827607783468329540}
   m_Layer: 0
-  m_Name: Unit
+  m_Name: Zombie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -115,6 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ed6349a14134e24abcdba30f3e7d2ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  team: 2
 --- !u!114 &-8870605983015425653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,5 +141,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c42740c7ba8ede84395088e7879a9788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.2
+  radius: 0.1
   height: 0.5
+  staticBody: 0
+--- !u!114 &6827607783468329540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4308563492845744422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f761ee5243055ce44b080e10443ed342, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

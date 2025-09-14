@@ -5,11 +5,12 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-public struct GridBodyCollector : IGridCollector
+public struct GridUnitCollisionCollector : IGridCollector
 {
     public float3 position;
     public float bodyRadius;
     public float bodyHeight;
+    public bool staticBody;
 
     public Entity querier;
     public float2 collisionForce;
@@ -24,7 +25,7 @@ public struct GridBodyCollector : IGridCollector
         {
             GridCellElement element = elements[i];
 
-            if (querier == element.entity)
+            if (staticBody || querier == element.entity)
                 continue;
 
             float distSqr = GridData.GetRealDistanceSq(position, element.postion);
@@ -33,7 +34,7 @@ public struct GridBodyCollector : IGridCollector
             if (distSqr > sumOfRadius * sumOfRadius)
                 continue;
 
-            if (distSqr < 0.001 && querier.Index < element.entity.Index)
+            if (distSqr < 0.01 && querier.Index < element.entity.Index)
                 position -= new float3(bodyRadius * 0.1f, 0, bodyRadius * 0.1f);
 
             float realDist = math.sqrt(distSqr);

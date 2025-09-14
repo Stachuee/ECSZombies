@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class ConfigAuthoring : MonoBehaviour
@@ -39,6 +40,19 @@ public class ConfigAuthoring : MonoBehaviour
                 maxSpawnedUnits = authoring.maxSpawnedUnits,
 
             });
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(default, new float3(halfSize * 2, 1, halfSize * 2));
+
+        for (int i = 0; i < cellsPerSide; i++)
+        {
+            float z = -halfSize + (halfSize * 2 / cellsPerSide) * i;
+            Gizmos.DrawLine(new float3(-halfSize, 0, z), new float3(halfSize, 0, z));
+            Gizmos.DrawLine(new float3(z, 0, -halfSize), new float3(z, 0, halfSize));
         }
     }
 }

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public struct Unit : IComponentData
 {
-    public float3 Velocity;
+    public byte team;
 }

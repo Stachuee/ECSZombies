@@ -7,6 +7,8 @@ public class BodyAuthoring : MonoBehaviour
     float radius;
     [SerializeField]
     float height;
+    [SerializeField]
+    bool staticBody;
 
     class Baker : Baker<BodyAuthoring>
     {
@@ -16,7 +18,8 @@ public class BodyAuthoring : MonoBehaviour
             PhysicBody body = new PhysicBody
             {
                 height = authoring.height,
-                radius = authoring.radius
+                radius = authoring.radius,
+                staticBody = authoring.staticBody
             };
             UnitBodyCollisionForce force = new UnitBodyCollisionForce();
 
