@@ -11,12 +11,18 @@ public class ConfigAuthoring : MonoBehaviour
     [SerializeField]
     GameObject gridDatabase;
     [SerializeField]
+    GameObject physicsCastDatabasePrefab;
+    [SerializeField]
     GameObject basicZombie;
+
 
     [Header("Grid info")]
     public float halfSize;
     public int cellsPerSide;
     public int cellCapacity;
+
+    [Header("Physics cast info")]
+    public int startingBufferSize;
 
     [Header("Debug")]
     public bool spawnUnits;
@@ -29,16 +35,18 @@ public class ConfigAuthoring : MonoBehaviour
             Entity entity = GetEntity(authoring, TransformUsageFlags.None);
             AddComponent(entity, new Config
             {
-                initialized = false,
+                gridInitialized = false,
+                physicsCastInitialized = false,
                 initializeOnApplicationStart = authoring.initializeOnApplicationStart,
                 gridDatabasePrefab = GetEntity(authoring.gridDatabase, TransformUsageFlags.None),
                 basicZombie = GetEntity(authoring.basicZombie, TransformUsageFlags.Dynamic),
+                physicsCastDatabasePrefab = GetEntity(authoring.physicsCastDatabasePrefab, TransformUsageFlags.None),
                 halfSize = authoring.halfSize,
                 cellCapacity = authoring.cellCapacity,
                 cellsPerSide = authoring.cellsPerSide,
                 spawnUnits = authoring.spawnUnits,
                 maxSpawnedUnits = authoring.maxSpawnedUnits,
-
+                startingBufferSize = authoring.startingBufferSize
             });
         }
     }

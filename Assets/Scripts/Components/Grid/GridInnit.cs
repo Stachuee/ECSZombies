@@ -15,10 +15,10 @@ public partial struct GridInnit : ISystem
 
     public void OnUpdate(ref SystemState state)
     {
-        if (!SystemAPI.TryGetSingleton(out Config config) && SystemAPI.TryGetSingleton(out GridDatabasesSingleton databases))
+        if (!SystemAPI.TryGetSingleton(out Config config) || SystemAPI.TryGetSingleton(out GridDatabasesSingleton databases))
             return;
 
-        if (config.initialized || config.initializeOnApplicationStart == false)
+        if (config.gridInitialized || config.initializeOnApplicationStart == false)
             return;
 
         Entity singleton = state.EntityManager.CreateEntity();
@@ -26,7 +26,7 @@ public partial struct GridInnit : ISystem
 
         CreateDatabase(ref state, ref config, ref singleton);
 
-        config.initialized = true;
+        config.gridInitialized = true;
         SystemAPI.SetSingleton(config);
     }
 
