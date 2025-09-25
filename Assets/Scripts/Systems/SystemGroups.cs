@@ -18,3 +18,5 @@ public partial class UnitMovment : ComponentSystemGroup { }
 
 public partial class BuildingActions : ComponentSystemGroup { }
 
+[UpdateAfter(typeof(BuildingActions))]
+public partial class BulletActions : ComponentSystemGroup { }

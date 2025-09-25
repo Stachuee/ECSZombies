@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public struct GridDatabase : IComponentData
@@ -157,6 +158,65 @@ public struct GridDatabase : IComponentData
             }
         }
 
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CallQueryLineCast<T>(in GridDatabase database, in UnsafeList<GridCell> cells, in UnsafeList<GridCellElement> elements,
+        in float3 startWorld, in float3 endWorld, ref T collector) where T : unmanaged, IGridCollector
+    {
+        bool exitEarly = false;
+
+        float2 start = startWorld.xz;
+        float2 end = endWorld.xz;
+
+        float a = (end.y - start.y) / (end.x - start.x); // get line equation from segment 
+        float b = start.y - a * start.x;
+
+        float2 dir = end - start;
+
+        float signX = dir.x > 0 ? database.gridData.cellSize * 0.5f : database.gridData.cellSize * -0.5f;
+        float signY = dir.y > 0 ? database.gridData.cellSize * 0.5f : database.gridData.cellSize * -0.5f;
+
+
+        int2 currentIndex = GridData.GetCoordsFromPostion(in database.gridData, start);
+        int2 endIndex = GridData.GetCoordsFromPostion(in database.gridData, end);
+        float2 currentPosition = new float2(start.x, start.y);
+
+        float2 X;
+        float2 Y;
+
+        for(int i = 0; i < database.gridData.cellCount * 2; i++) //safeguard
+        {
+            GridCell cell = cells[GridData.GetCellIndexFromCoords(in database.gridData, currentIndex)];
+            collector.OnVisitCell(in cell, in elements, out exitEarly);
+
+            //if we reached last cell, exit
+            if ((currentIndex.x == endIndex.x && currentIndex.y == endIndex.y) || exitEarly) 
+                break;
+
+            //Get a postion of a middle of a cell
+            float2 pos = GridData.GetWorldPositionOfAMiddleOfACell(in database.gridData, currentIndex);
+            
+            //calculate intersection with grid edges
+            float nextY = a * (pos.x + signX) + b;
+            float nextX = ((pos.y + signY) - b) / a;
+
+            Y = new float2(pos.x + signX, nextY);
+            X = new float2(nextX, pos.y + signY);
+
+            //Set next postion at the closest intersection, and update index of current cell
+            if (math.distancesq(Y, currentPosition) < math.distancesq(X, currentPosition))
+            {
+                currentPosition = Y;
+                currentIndex.x += dir.x > 0 ? 1 : -1;
+            }
+            else
+            {
+                currentPosition = X;
+                currentIndex.y += dir.y > 0 ? 1 : -1;
+            }
+
+        }
     }
 
 }

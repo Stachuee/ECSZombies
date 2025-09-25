@@ -40,6 +40,16 @@ public struct GridData
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float2 GetWorldPositionOfAMiddleOfACell(in GridData grid, int2 coords)
+    {
+        return new float2
+        {
+            x = coords.x * grid.cellSize - grid.halfSize + grid.cellSize / 2,
+            y = coords.y * grid.cellSize - grid.halfSize + grid.cellSize / 2
+        };
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int2 GetCoordsFromIndex(in GridData grid, int index)
     {
         return new int2
