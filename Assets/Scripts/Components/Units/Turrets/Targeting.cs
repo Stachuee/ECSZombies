@@ -13,8 +13,14 @@ public struct Targeting : IComponentData
         Friend, Enemy
     }
 
+    public enum FireType : byte
+    {
+        Direct, Indirect
+    }
+
     public TargetingType targetingType;
     public TargetingTeamType targetingTeamType;
+    public FireType fireType;
 
     public bool targetAvalible;
     public float3 targetPosition;

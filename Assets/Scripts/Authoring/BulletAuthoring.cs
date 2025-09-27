@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class BulletAuthoring : MonoBehaviour
 {
+    [SerializeField]
+    float damage;
+    [SerializeField]
+    float speed;
+    [SerializeField]
+    LayerMask mask;
+
     public class Baker : Baker<BulletAuthoring>
     {
         public override void Bake(BulletAuthoring authoring)
@@ -11,9 +18,13 @@ public class BulletAuthoring : MonoBehaviour
             Entity entity = GetEntity(authoring, TransformUsageFlags.Dynamic);
             AddComponent(entity, new Bullet
             {
-                damage = 1,
-                speed = 1,
-                direction = new float3(1, 0, 0)
+                damage = authoring.damage,
+                speed = authoring.speed,
+                direction = new float3(1, 0, 0),
+                hitMask = new PhysicBodyMask()
+                {
+                    mask = authoring.mask.value
+                }
             });
         }
     }

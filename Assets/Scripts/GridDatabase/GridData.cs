@@ -166,6 +166,7 @@ public struct GridCellElement : IBufferElementData
 {
     public Entity entity;
     public float3 postion;
+    public PhysicBodyMask mask;
     public byte team;
 
     public float radius;

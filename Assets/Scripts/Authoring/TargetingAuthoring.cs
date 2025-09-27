@@ -8,6 +8,7 @@ public class TargetingAuthoring : MonoBehaviour
     public float updateTimer;
     public Targeting.TargetingType targetingType;
     public Targeting.TargetingTeamType targetingTeamType;
+    public Targeting.FireType fireType;
 
     class Baker : Baker<TargetingAuthoring>
     {
@@ -21,7 +22,8 @@ public class TargetingAuthoring : MonoBehaviour
                 targetingRange = authoring.range,
                 targetingType = authoring.targetingType,
                 timeBetweenUpdates = authoring.updateTimer,
-                targetingTeamType = authoring.targetingTeamType
+                targetingTeamType = authoring.targetingTeamType,
+                fireType = authoring.fireType
             });
         }
     }

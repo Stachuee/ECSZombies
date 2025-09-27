@@ -144,6 +144,9 @@ MonoBehaviour:
   radius: 0.1
   height: 0.5
   staticBody: 0
+  mask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &6827607783468329540
 MonoBehaviour:
   m_ObjectHideFlags: 0

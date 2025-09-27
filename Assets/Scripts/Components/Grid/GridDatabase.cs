@@ -187,7 +187,10 @@ public struct GridDatabase : IComponentData
 
         for(int i = 0; i < database.gridData.cellCount * 2; i++) //safeguard
         {
-            GridCell cell = cells[GridData.GetCellIndexFromCoords(in database.gridData, currentIndex)];
+            if (!GridData.CheckIfBounds(in database.gridData, currentPosition))
+                continue;
+
+            GridCell cell = cells[GridData.GetCellIndexFromCoords(in database.gridData, currentIndex)]; // somehow gets -5?
             collector.OnVisitCell(in cell, in elements, out exitEarly);
 
             //if we reached last cell, exit

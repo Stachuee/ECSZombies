@@ -10,6 +10,10 @@ public class TurretAuthoring : MonoBehaviour
     [SerializeField]
     bool rotateTurret;
 
+    [SerializeField]
+    float fireRate;
+
+
     class Baker : Baker<TurretAuthoring>
     {
         public override void Bake(TurretAuthoring authoring)
@@ -19,7 +23,9 @@ public class TurretAuthoring : MonoBehaviour
             {
                 turretRotationSharpness = authoring.turretRotationSharpness,
                 maxShootAngle = authoring.maxShootAngle,
-                rotate = authoring.rotateTurret
+                rotate = authoring.rotateTurret,
+
+                firerate = authoring.fireRate
             });
         }
     }

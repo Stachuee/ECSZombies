@@ -3,8 +3,14 @@ using UnityEngine;
 
 public class TurretsConfigAuthoring : MonoBehaviour
 {
+    [Header("Bullets prefabs")]
     [SerializeField]
     GameObject simpleBullet;
+
+    [Header("Bullets settings")]
+    [SerializeField]
+    float bulletLifeTime;
+
 
     public class Baker : Baker<TurretsConfigAuthoring>
     {
@@ -13,7 +19,9 @@ public class TurretsConfigAuthoring : MonoBehaviour
             Entity entity = GetEntity(authoring, TransformUsageFlags.None);
             AddComponent(entity, new TurretsConfig
             {
-                simpleBullet = GetEntity(authoring.simpleBullet, TransformUsageFlags.Dynamic)
+                simpleBullet = GetEntity(authoring.simpleBullet, TransformUsageFlags.Dynamic),
+
+                bulletLifeTime = authoring.bulletLifeTime,
             });
         }
     }

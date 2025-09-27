@@ -116,7 +116,8 @@ public partial struct GridSystem : ISystem
                     postion = ltw.Position,
                     height = body.height,
                     radius = body.radius,
-                    team = unit.team,
+                    mask = body.mask,
+                    team = unit.team
                 };
                 GridDatabase.AddToDatabase(in cachedDatabase.gridDatabase, ref cachedDatabase.gridCellUnsafe, ref cachedDatabase.gridCellElementUnsafe, element);
             }

@@ -7,7 +7,7 @@ public struct LinecastCollector : IGridCollector
 {
     public float3 start;
     public float3 end;
-    public byte mask;
+    public PhysicBodyMask hitMask;
 
     public bool hit;
     public Entity hitEntity;
@@ -21,6 +21,9 @@ public struct LinecastCollector : IGridCollector
             GridCellElement element = elements[i];
             if (SegmentIntersectsCircle(start.xz, end.xz, element.postion.xz, element.radius))
             {
+                if (PhysicBodyMask.IgnoreCollision(hitMask, element.mask))
+                   continue;
+
                 hit = true;
                 hitEntity = element.entity;
                 exitEarly = true;

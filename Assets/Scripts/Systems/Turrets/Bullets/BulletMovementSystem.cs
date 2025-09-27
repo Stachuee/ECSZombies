@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Unity.VisualScripting;
 using UnityEngine;
 using static GridDatabase;
 
@@ -64,15 +65,19 @@ public partial struct BulletMovementSystem : ISystem
             float3 prevoiusPosition = lt.Position;
             lt.Position += bullet.direction * bullet.speed * deltaTime;
 
+            bullet.lifetimeRemain -= deltaTime;
+
             LinecastCollector collector = new LinecastCollector()
             {
                 start = prevoiusPosition,
                 end = lt.Position,
+                hitMask = bullet.hitMask,
             };
 
             GridDatabase.CallQueryLineCast<LinecastCollector>(in unsafeGrid.gridDatabase, in unsafeGrid.gridCellUnsafe, in unsafeGrid.gridCellElementUnsafe,
                 in prevoiusPosition, in lt.Position, ref collector);
-            bullet.dispose = collector.hit;
+            if(collector.hit)
+                bullet.dispose = true;
         }
         public bool OnChunkBegin(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
         {
@@ -95,9 +100,8 @@ public partial struct BulletMovementSystem : ISystem
 
         public void Execute(Entity entity, in Bullet bullet)
         {
-            if (!bullet.dispose)
-                return;
-            ECB.DestroyEntity(_chunkIndex, entity);
+            if (bullet.dispose || bullet.lifetimeRemain < 0)
+                ECB.DestroyEntity(_chunkIndex, entity);
         }
 
         public bool OnChunkBegin(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)

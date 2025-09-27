@@ -30,6 +30,9 @@ public partial struct TurretBaseSystem : ISystem
 
         public void Execute(ref Targeting targeting, ref LocalTransform lt, ref Turret turret)
         {
+            if (!targeting.targetAvalible)
+                return;
+
             if(!turret.rotate)
             {
                 turret.canShoot = true;

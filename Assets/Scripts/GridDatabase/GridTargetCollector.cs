@@ -20,7 +20,6 @@ public struct GridTargetCollector : IGridCollector
     public void OnVisitCell(in GridCell cell, in UnsafeList<GridCellElement> elements, out bool exitEarly)
     {
         exitEarly = false;
-        foundAvalibleTarget = false;
 
         closest = float.MaxValue;
 
