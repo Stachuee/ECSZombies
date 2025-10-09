@@ -5,7 +5,7 @@ using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
 [UpdateInGroup(typeof(GridInitializing))]
-public partial struct GridInnit : ISystem
+public partial struct GridInnitSystem : ISystem
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
@@ -18,7 +18,7 @@ public partial struct GridInnit : ISystem
         if (!SystemAPI.TryGetSingleton(out Config config) || SystemAPI.TryGetSingleton(out GridDatabasesSingleton databases))
             return;
 
-        if (config.gridInitialized || config.initializeOnApplicationStart == false)
+        if (config.spatialGridInitialized || config.initializeOnApplicationStart == false)
             return;
 
         Entity singleton = state.EntityManager.CreateEntity();
@@ -26,7 +26,7 @@ public partial struct GridInnit : ISystem
 
         CreateDatabase(ref state, ref config, ref singleton);
 
-        config.gridInitialized = true;
+        config.spatialGridInitialized = true;
         SystemAPI.SetSingleton(config);
     }
 

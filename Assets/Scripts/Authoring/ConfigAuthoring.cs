@@ -10,17 +10,21 @@ public class ConfigAuthoring : MonoBehaviour
     
     [Header("Prefabs")]
     [SerializeField]
-    GameObject gridDatabase;
+    GameObject spatialGridDatabase;
     [SerializeField]
-    GameObject physicsCastDatabasePrefab;
+    GameObject pathfindingGridDatabase;
     [SerializeField]
     GameObject basicZombie;
 
 
-    [Header("Grid info")]
+    [Header("Spatial grid info")]
     public float halfSize;
     public int cellsPerSide;
     public int cellCapacity;
+
+    [Header("Pathfinding grid info")]
+    public float pathfindingHalfSize;
+    public int pathfindingPointsPerSide;
 
     [Header("Physics cast info")]
     public int startingBufferSize;
@@ -46,15 +50,18 @@ public class ConfigAuthoring : MonoBehaviour
             Entity entity = GetEntity(authoring, TransformUsageFlags.None);
             AddComponent(entity, new Config
             {
-                gridInitialized = false,
+                spatialGridInitialized = false,
+                pathfindingGridInitialized = false,
                 physicsCastInitialized = false,
                 initializeOnApplicationStart = authoring.initializeOnApplicationStart,
-                gridDatabasePrefab = GetEntity(authoring.gridDatabase, TransformUsageFlags.None),
+                gridDatabasePrefab = GetEntity(authoring.spatialGridDatabase, TransformUsageFlags.None),
+                pathfindingGridDatabasePrefab = GetEntity(authoring.pathfindingGridDatabase, TransformUsageFlags.None),
                 basicZombie = GetEntity(authoring.basicZombie, TransformUsageFlags.Dynamic),
-                physicsCastDatabasePrefab = GetEntity(authoring.physicsCastDatabasePrefab, TransformUsageFlags.None),
                 halfSize = authoring.halfSize,
                 cellCapacity = authoring.cellCapacity,
                 cellsPerSide = authoring.cellsPerSide,
+                pathfindingHalfSize = authoring.pathfindingHalfSize,
+                pathfindingPointsPerSide = authoring.pathfindingPointsPerSide,
                 spawnUnits = authoring.spawnUnits,
                 maxSpawnedUnits = authoring.maxSpawnedUnits,
                 startingBufferSize = authoring.startingBufferSize

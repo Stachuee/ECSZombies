@@ -149,18 +149,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initializeOnApplicationStart: 1
-  gridDatabase: {fileID: 2981268466988972807, guid: 23ff7a58d8b116f49a0bda2f811d0098, type: 3}
-  physicsCastDatabasePrefab: {fileID: 7729852863198785869, guid: ff4664248658e80429ca0317dfa78b80, type: 3}
+  spatialGridDatabase: {fileID: 2981268466988972807, guid: 23ff7a58d8b116f49a0bda2f811d0098, type: 3}
+  pathfindingGridDatabase: {fileID: 7756028761467392361, guid: 9f2a2ac792023fc4f810b85b4d2cbc50, type: 3}
   basicZombie: {fileID: 4308563492845744422, guid: 6d96a28dd92934d4292be632282763d4, type: 3}
   halfSize: 20
   cellsPerSide: 10
   cellCapacity: 64
+  pathfindingHalfSize: 0
+  pathfindingPointsPerSide: 0
   startingBufferSize: 400
   showGridSize: 0
   spawnUnits: 1
   maxSpawnedUnits: 1
   lineCastTest: 0
-  lineCastTestTwo: 1
+  lineCastTestTwo: 0
   start:
     x: 8.8
     y: -7
