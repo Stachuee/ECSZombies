@@ -18,6 +18,7 @@ public struct TargetingGrid
         boundMin = new float2(-halfSize);
         boundMax = new float2(halfSize);
     }
+
 }
 
 [InternalBufferCapacity(0)]

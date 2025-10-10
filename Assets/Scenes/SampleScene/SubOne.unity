@@ -155,24 +155,13 @@ MonoBehaviour:
   halfSize: 20
   cellsPerSide: 10
   cellCapacity: 64
-  pathfindingHalfSize: 0
-  pathfindingPointsPerSide: 0
+  pathfindingHalfSize: 20
+  pathfindingPointsPerSide: 40
   startingBufferSize: 400
-  showGridSize: 0
+  showSpatialGridSize: 0
+  showPathfindingGridSize: 1
   spawnUnits: 1
-  maxSpawnedUnits: 1
-  lineCastTest: 0
-  lineCastTestTwo: 0
-  start:
-    x: 8.8
-    y: -7
-  end:
-    x: -15.92
-    y: 14.68
-  circlePos:
-    x: -6.69
-    y: 13.74
-  circleRadius: 5.88
+  maxSpawnedUnits: 1000
 --- !u!4 &87080361
 Transform:
   m_ObjectHideFlags: 0
@@ -700,6 +689,7 @@ MonoBehaviour:
   radius: 0.5
   height: 0.5
   staticBody: 1
+  mass: 0
   maskType: 1
 --- !u!114 &1868453238
 MonoBehaviour:

@@ -9,10 +9,10 @@ public class PathfindingGridAuthoring : MonoBehaviour
         public override void Bake(PathfindingGridAuthoring authoring)
         {
             Entity entity = GetEntity(authoring, TransformUsageFlags.None);
-            TargetingGridDatabase database = new TargetingGridDatabase();
+            PathfindingGridDatabase database = new PathfindingGridDatabase();
             DynamicBuffer<PathfindingPoint> points = AddBuffer<PathfindingPoint>(entity);
 
-            TargetingGridDatabase.CreataDatabase(1, 1, ref database, ref points);
+            PathfindingGridDatabase.CreataDatabase(1, 1, ref database, ref points);
             AddComponent(entity, database);
         }
     }

@@ -169,6 +169,9 @@ public struct GridCellElement : IBufferElementData
     public PhysicBodyMask mask;
     public byte team;
 
+    public float3 velocity;
+
     public float radius;
     public float height;
+    public float mass;
 }

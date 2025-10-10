@@ -10,10 +10,13 @@ public struct GridUnitCollisionCollector : IGridCollector
     public float3 position;
     public float bodyRadius;
     public float bodyHeight;
+    public float bodyMass;
     public bool staticBody;
 
     public Entity querier;
     public float2 collisionForce;
+
+    public float3 velocity;
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42,6 +45,7 @@ public struct GridUnitCollisionCollector : IGridCollector
             float overlap = realDist - sumOfRadius;
             collisionForce += normalized * (overlap / 2);
 
+            velocity = (bodyMass * velocity + element.mass * element.velocity) / (bodyMass + element.mass);
         }
 
     }

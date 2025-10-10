@@ -50,6 +50,7 @@ public struct PhysicBody : IComponentData
 
     public float radius;
     public float height;
+    public float mass;
 
     public PhysicBodyMask mask;
 

@@ -1,7 +1,7 @@
 using Unity.Entities;
 using UnityEngine;
 
-public struct TargetingGridSingleton : IComponentData
+public struct PathfindingGridSingleton : IComponentData
 {
     public Entity targetingSystem;
 }

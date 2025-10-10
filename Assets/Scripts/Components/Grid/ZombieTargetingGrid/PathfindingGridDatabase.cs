@@ -1,13 +1,14 @@
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using UnityEngine;
 
-public struct TargetingGridDatabase : IComponentData
+public struct PathfindingGridDatabase : IComponentData
 {
     public TargetingGrid gridData;
 
     public static void CreataDatabase(float halfSize, int pointsPerSide,
-        ref TargetingGridDatabase gridDatabase, ref DynamicBuffer<PathfindingPoint> points)
+        ref PathfindingGridDatabase gridDatabase, ref DynamicBuffer<PathfindingPoint> points)
     {
         gridDatabase.gridData = new TargetingGrid(halfSize, pointsPerSide);
 
@@ -19,4 +20,5 @@ public struct TargetingGridDatabase : IComponentData
 
         points.Resize(pointCount, NativeArrayOptions.ClearMemory);
     }
+
 }

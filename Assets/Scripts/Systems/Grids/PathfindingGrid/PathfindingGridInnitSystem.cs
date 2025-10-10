@@ -10,17 +10,17 @@ public partial struct PathfindingGridInnitSystem : ISystem
 
     }
 
-    //[BurstCompile]
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        if (!SystemAPI.TryGetSingleton(out Config config) || SystemAPI.TryGetSingleton(out TargetingGridSingleton databases))
+        if (!SystemAPI.TryGetSingleton(out Config config) || SystemAPI.TryGetSingleton(out PathfindingGridSingleton databases))
             return;
 
         if (config.pathfindingGridInitialized || config.initializeOnApplicationStart == false)
             return;
 
         Entity singleton = state.EntityManager.CreateEntity();
-        state.EntityManager.AddComponentData(singleton, new TargetingGridSingleton());
+        state.EntityManager.AddComponentData(singleton, new PathfindingGridSingleton());
 
         CreateDatabase(ref state, ref config, ref singleton);
 
@@ -28,17 +28,17 @@ public partial struct PathfindingGridInnitSystem : ISystem
         SystemAPI.SetSingleton(config);
     }
 
-    //[BurstCompile]
+    [BurstCompile]
     void CreateDatabase(ref SystemState state, ref Config config, ref Entity entity)
     {
-        ref TargetingGridSingleton singleton = ref SystemAPI.GetSingletonRW<TargetingGridSingleton>().ValueRW;
+        ref PathfindingGridSingleton singleton = ref SystemAPI.GetSingletonRW<PathfindingGridSingleton>().ValueRW;
 
         singleton.targetingSystem =
             state.EntityManager.Instantiate(config.pathfindingGridDatabasePrefab);
-        TargetingGridDatabase database = state.EntityManager.GetComponentData<TargetingGridDatabase>(singleton.targetingSystem);
+        PathfindingGridDatabase database = state.EntityManager.GetComponentData<PathfindingGridDatabase>(singleton.targetingSystem);
         DynamicBuffer<PathfindingPoint> points = state.EntityManager.GetBuffer<PathfindingPoint>(singleton.targetingSystem);
 
-        TargetingGridDatabase.CreataDatabase(config.pathfindingHalfSize, config.pathfindingPointsPerSide, ref database, ref points);
+        PathfindingGridDatabase.CreataDatabase(config.pathfindingHalfSize, config.pathfindingPointsPerSide, ref database, ref points);
 
         state.EntityManager.SetComponentData(singleton.targetingSystem, database);
     }

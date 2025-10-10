@@ -9,6 +9,9 @@ public class BodyAuthoring : MonoBehaviour
     float height;
     [SerializeField]
     bool staticBody;
+    [SerializeField]
+    float mass;
+
 
     [SerializeField]
     PhysicBodyMask.MaskType maskType;
@@ -25,6 +28,7 @@ public class BodyAuthoring : MonoBehaviour
             {
                 height = authoring.height,
                 radius = authoring.radius,
+                mass = authoring.mass,
                 staticBody = authoring.staticBody,
                 mask = mask
             };

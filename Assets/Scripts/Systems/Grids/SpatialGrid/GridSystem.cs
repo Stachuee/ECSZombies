@@ -116,6 +116,8 @@ public partial struct GridSystem : ISystem
                     postion = ltw.Position,
                     height = body.height,
                     radius = body.radius,
+                    mass = body.mass,
+                    velocity = body.velocity,
                     mask = body.mask,
                     team = unit.team
                 };
