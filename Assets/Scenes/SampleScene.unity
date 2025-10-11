@@ -129,13 +129,14 @@ GameObject:
   m_Component:
   - component: {fileID: 51016590}
   - component: {fileID: 51016589}
+  - component: {fileID: 51016591}
   m_Layer: 0
-  m_Name: TEst
+  m_Name: Test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &51016589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,17 +144,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 51016588}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3506d98e37706264aa515b923093fa09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  start: {x: 1.94, y: 0.88}
-  end: {x: 5.62, y: 3}
-  currentIndexX: 6
-  currentIndexY: 3
-  X: {x: 6.487924, y: 3.5}
-  Y: {x: 5.5, y: 2.9308696}
+  pointCountPerSide: 40
+  halfSize: 20
+  sides:
+  - x: 3.57
+    y: 0
+  - x: 0
+    y: -3.25
+  - x: -2.71
+    y: 0
+  - x: 0.24
+    y: -1.55
+  point:
+    x: 0.99
+    y: -1.8
 --- !u!4 &51016590
 Transform:
   m_ObjectHideFlags: 0
@@ -169,6 +178,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &51016591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51016588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4424bd2008d2cc341ab1f04df2a48279, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testGrid: 0
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,7 +308,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 0
+  m_Antialiasing: 1
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0

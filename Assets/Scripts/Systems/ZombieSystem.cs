@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using static GridDatabase;
+using static PathfindingGridDatabase;
 
 [UpdateInGroup(typeof(UnitMovment))]
 public partial struct ZombieSystem : ISystem
@@ -30,9 +31,19 @@ public partial struct ZombieSystem : ISystem
 
         state.Dependency = innit.Schedule(state.Dependency);
 
+        PathfindingGridSingleton pathfindingDatabaseSingleton = SystemAPI.GetSingleton<PathfindingGridSingleton>();
+        CachedPathfindingGridDatabaseUnsafe pathfindingDatabaseUnsafe = new CachedPathfindingGridDatabaseUnsafe()
+        {
+            entity = pathfindingDatabaseSingleton.targetingSystem,
+            pathfindingDatabaseLookup = SystemAPI.GetComponentLookup<PathfindingGridDatabase>(),
+            pathfindingPointsLookup = SystemAPI.GetBufferLookup<PathfindingPoint>()
+        };
+
         ZombieMovmentJob movment = new ZombieMovmentJob
         {
-            deltaTime = SystemAPI.Time.DeltaTime
+            deltaTime = SystemAPI.Time.DeltaTime,
+            cachedPathfindingGridDatabase = pathfindingDatabaseUnsafe
+            
         };
 
         state.Dependency = movment.ScheduleParallel(state.Dependency);
@@ -79,18 +90,30 @@ public partial struct ZombieSystem : ISystem
 
     [BurstCompile]
     [WithAll(typeof(Zombie))]
-    public partial struct ZombieMovmentJob : IJobEntity
+    public partial struct ZombieMovmentJob : IJobEntity, IJobEntityChunkBeginEnd
     {
         public float deltaTime;
+        public CachedPathfindingGridDatabaseUnsafe cachedPathfindingGridDatabase;
 
         private void Execute(ref Unit unit, ref Health health, ref LocalTransform transform, ref ZombiePathing pathing, ref ZombieStats stats)
         {
-            float3 targetVector = float3.zero - transform.Position;
-            quaternion target = quaternion.LookRotationSafe(targetVector, math.up());
+            float2 targetVector = PathfindingGridDatabase.GetWalkDirection(transform.Position, in cachedPathfindingGridDatabase.pathfindingGridDatabase, in cachedPathfindingGridDatabase.pathfindingPointsUnsafe);
+            quaternion target = quaternion.LookRotationSafe(new float3(targetVector.x, 0, targetVector.y), math.up());
             transform.Rotation = target;
             float3 forward = math.mul(transform.Rotation, math.forward());
             transform.Position += forward * deltaTime * stats.speed;
         }
+
+        public bool OnChunkBegin(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)
+        {
+            cachedPathfindingGridDatabase.CacheData();
+            return true;
+        }
+
+        public void OnChunkEnd(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask, bool chunkWasExecuted)
+        {
+        }
+
     }
 
 

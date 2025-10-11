@@ -24,6 +24,7 @@ public partial struct PathfindingGridSystem : ISystem
         Config config = SystemAPI.GetSingleton<Config>();
         PathfindingGridSingleton singleton = SystemAPI.GetSingleton<PathfindingGridSingleton>();
 
+        
     }
 
 
